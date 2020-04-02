@@ -80,7 +80,7 @@ function HomeFeed() {
       <TypeForm />
       <div></div>
       <div></div>
-
+      <div></div>
       {state.loading ? (
         <CircularProgress />
       ) : (

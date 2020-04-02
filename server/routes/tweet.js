@@ -18,11 +18,12 @@ const {
 const createTweet = (status, { isRetweet }) => {
   const newTweetId = Math.random() * 10 ** 18;
   const timestamp = new Date().toISOString();
-
+  console.log(status);
   let sharedTweetBasics = {
     id: newTweetId,
     authorHandle: CURRENT_USER_HANDLE,
     timestamp,
+    // status: status,
     sortedTimestamp: timestamp,
   };
 
@@ -58,6 +59,7 @@ router.get('/api/tweet/:tweetId', (req, res) => {
  * Post a new tweet
  */
 router.post('/api/tweet', (req, res) => {
+  console.log('REQ.BODY', req.body);
   const newTweet = createTweet(req.body.status, { isRetweet: false });
   data.tweets[newTweet.id] = newTweet;
 

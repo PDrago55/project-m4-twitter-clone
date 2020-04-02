@@ -31,6 +31,7 @@ function TypeForm() {
 
   return (
     <Wrapper>
+      <div></div>
       {status === "loading" ? (
         <CircularProgress />
       ) : (
