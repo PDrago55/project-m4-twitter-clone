@@ -9,7 +9,6 @@ import Notifications from "./Notifications";
 import Bookmarks from "./Bookmarks";
 import GlobalStyles from "./GlobalStyles";
 import styled from "styled-components";
-import Tweet from "./Tweet";
 import { CurrentUser } from "./CurrentUserContext";
 
 function App() {
@@ -31,9 +30,7 @@ function App() {
               <Bookmarks />
             </Route>
             <Route exact path="/tweet/:tweetId">
-              <TweetDetails>
-                <Tweet />
-              </TweetDetails>
+              <TweetDetails />
             </Route>
             <Route exact path="/:profileId">
               <Profile currentUser={currentUser} status={status} />

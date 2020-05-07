@@ -7,6 +7,8 @@ import { upload } from "react-icons-kit/feather/upload";
 import { messageCircle } from "react-icons-kit/feather/messageCircle";
 import Icon from "react-icons-kit";
 import TypeForm from "./TypeForm";
+import ErrorPage from "./ErrorPage";
+import { Link } from "react-router-dom";
 
 const initialState = {
   loading: true,
@@ -24,7 +26,7 @@ const initialState = {
   isFollowingYou: null,
   isBeingFollowedByYou: null,
   error: "",
-  post: {}
+  post: {},
 };
 
 const reducer = (state, action) => {
@@ -42,14 +44,14 @@ const reducer = (state, action) => {
         tweetsById: state.tweetsById,
         loading: false,
         post: action.payload,
-        error: ""
+        error: "",
       };
       break;
-    case "Fetch Error":
+    case "Fetch_Error":
       newState = {
         loading: false,
         post: {},
-        error: "something went wrong dude"
+        error: "Something went Wrong",
       };
       break;
     default:
@@ -60,85 +62,156 @@ const reducer = (state, action) => {
 
 function HomeFeed() {
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  // const date = format(new Date(), "K:mm  a · PPP");
+  // console.log(date);
   useEffect(() => {
     fetch("/api/me/home-feed")
-      .then(res => {
+      .then((res) => {
         return res.json();
       })
-      .then(data => {
+      .then((data) => {
         return dispatch({ type: "Fetch_Success", payload: data });
       })
-      .catch(error => {
-        console.log("error", error);
-        dispatch({ type: "fetch_error" });
+      .catch((error) => {
+        console.log(error);
+        return dispatch({ type: "Fetch_Error" });
       });
   }, []);
   return (
-    <div>
+    <Wrapper>
       <strong>HOME</strong>
       <TypeForm />
-      <div></div>
-      <div></div>
-      <div></div>
+      <Divider></Divider>
       {state.loading ? (
         <CircularProgress />
+      ) : state.error ? (
+        <ErrorPage />
       ) : (
-        state.post.tweetIds.map(tweet => {
+        state.post.tweetIds.map((tweet) => {
+          const dateFormat = new Date(state.post.tweetsById[tweet].timestamp);
+          let monthNumber = dateFormat.getMonth();
+          let monthNames = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
+          let monthName = monthNames[monthNumber];
+          let dayNumber = dateFormat.getDate();
+          function nth(n) {
+            return (
+              ["st", "nd", "rd"][((((n + 90) % 100) - 10) % 10) - 1] || "th"
+            );
+          }
           return (
-            <Wrapper>
-              <Avatar
-                src={state.post.tweetsById[tweet].author.avatarSrc}
-              ></Avatar>
+            <OneTweet>
+              <Top>
+                <Avatar
+                  src={state.post.tweetsById[tweet].author.avatarSrc}
+                ></Avatar>
+                <DisplayName>
+                  <Link to="/:profileId">
+                    {state.post.tweetsById[tweet].author.displayName}
+                  </Link>
+                </DisplayName>
+                <Timestamp>
+                  {" "}
+                  {monthName + " " + dayNumber + nth(dayNumber)}
+                </Timestamp>
+              </Top>
               <Name>@{state.post.tweetsById[tweet].author.handle}</Name>
-              <TweetContents>
-                {state.post.tweetsById[tweet].status}
-
-                {state.post.tweetsById[tweet].media.length > 0 ? (
-                  <PostImage
-                    src={state.post.tweetsById[tweet].media[0].url}
-                  ></PostImage>
-                ) : (
-                  <></>
-                )}
-              </TweetContents>
-              <Timestamp>{state.post.tweetsById[tweet].timestamp}</Timestamp>
+              <Middle>
+                <Link to={`/tweet/${tweet}`}>
+                  <TweetContents>
+                    <Idk>{state.post.tweetsById[tweet].status}</Idk>
+                    {state.post.tweetsById[tweet].media.length > 0 ? (
+                      <PostImage
+                        src={state.post.tweetsById[tweet].media[0].url}
+                      ></PostImage>
+                    ) : (
+                      <></>
+                    )}
+                  </TweetContents>
+                </Link>
+              </Middle>
               <IconWrapper>
                 <Icon icon={messageCircle}></Icon>
                 <Icon icon={heart}></Icon>
                 <Icon icon={repeat}></Icon>
                 <Icon icon={upload}></Icon>
               </IconWrapper>
-              <Divider></Divider>
-            </Wrapper>
+            </OneTweet>
           );
         })
       )}
-      {state.error ? "error" : null}
-    </div>
+    </Wrapper>
   );
 }
 
 const IconWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 20px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #ededed;
 `;
 
+const Idk = styled.div`
+  display: flex;
+`;
+const Middle = styled.div`
+  display: flex;
+  flex-direction: row;
+  a {
+    text-decoration: none;
+    display: flex;
+    margin: 7px;
+    color: black;
+  }
+`;
+// const UserLink = styled.div`
+//   a {
+//     text-decoration: none;
+//     display: flex;
+//     margin: 7px;
+//     color: black;
+//   }
+// `;
+const Top = styled.div`
+  display: flex;
+`;
 const Divider = styled.div`
   height: 1px;
   background: rgb(230, 236, 240);
 `;
 
+const DisplayName = styled.div`
+  a {
+    text-decoration: none;
+    display: flex;
+    margin: 7px;
+    color: black;
+  }
+  ,font-weight: bold;
+`;
 const TweetContents = styled.div`
+  font-family: sans-serif;
   font-size: 22px;
-  padding: 16px 0;
+  padding: 5px 0px;
 `;
 
 const Timestamp = styled.div`
   color: rgb(101, 119, 134);
   font-size: 16px;
-  padding-bottom: 16px;
+  margin-top: 7px;
 `;
 
 const Name = styled.div`
@@ -149,20 +222,32 @@ const Name = styled.div`
 `;
 
 const PostImage = styled.img`
-  width: 500px;
-  height: 300px;
+  width: 400px;
+  height: 200px;
+  border-radius: 10px;
+`;
+
+const OneTweet = styled.div`
+  padding: 20px;
+  border: 1px solid #ededed;
 `;
 
 const Avatar = styled.img`
   width: 48px;
   height: 48px;
   border-radius: 50%;
+  margin-right: 10px;
 `;
+
+const Space = styled.div`
+background-color: white;
+padding 30px;`;
 
 const Wrapper = styled.div`
   background: white;
   width: 780px;
   padding: 16px;
+  position: relative;
   text-align: left;
   /* padding-bottom: 0; */
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,

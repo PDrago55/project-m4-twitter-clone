@@ -18,25 +18,25 @@ function SideBar() {
         </StyledLinks>
         <StyledLinks>
           <StyledLink to="/">
-            <Icon icon={home}></Icon>
+            <Icon size={32} icon={home}></Icon>
             Home
           </StyledLink>
         </StyledLinks>
         <StyledLinks>
           <StyledLink to="/:profileId">
-            <Icon icon={user}></Icon>
+            <Icon size={32} icon={user}></Icon>
             Profile
           </StyledLink>
         </StyledLinks>
         <StyledLinks>
           <StyledLink to="/notifications">
-            <Icon icon={bell}></Icon>
+            <Icon size={32} icon={bell}></Icon>
             Notifications
           </StyledLink>
         </StyledLinks>
         <StyledLinks>
           <StyledLink to="/bookmarks">
-            <Icon icon={bookmark}></Icon>
+            <Icon size={32} icon={bookmark}></Icon>
             Bookmarks
           </StyledLink>
         </StyledLinks>
@@ -48,25 +48,36 @@ function SideBar() {
 const StyledContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  flex-grow: 0.5;
+  flex-grow: 0.25;
 `;
 const StyledLink = styled(NavLink)`
+  text-decoration: none;
+  display: flex;
+  margin: 7px;
+  color: black;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: sans-serif;
+  display: flex;
+
   &.active {
     color: ${COLORS.primary};
   }
 `;
 
 const StyledLinks = styled.div`
-  a {
-    text-decoration: none;
-    display: flex;
-    margin: 7px;
-    color: black;
-  }
   font-size: 1.1rem;
   font-weight: bold;
   font-family: sans-serif;
   display: flex;
+  padding-right: 16px;
+  margin-top: -6px;
+
+  &:hover {
+    background-color: ${COLORS.secondary};
+    border: 2px solid ${COLORS.secondary};
+    border-radius: 50px;
+  }
 `;
 
 export default SideBar;

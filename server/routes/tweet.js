@@ -18,7 +18,7 @@ const {
 const createTweet = (status, { isRetweet }) => {
   const newTweetId = Math.random() * 10 ** 18;
   const timestamp = new Date().toISOString();
-  console.log(status);
+  console.log('status', status);
   let sharedTweetBasics = {
     id: newTweetId,
     authorHandle: CURRENT_USER_HANDLE,

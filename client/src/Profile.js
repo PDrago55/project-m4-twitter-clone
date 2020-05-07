@@ -1,16 +1,35 @@
 import React from "react";
 import CircularProgress from "material-ui-core/CircularProgress";
 import styled from "styled-components";
+import Icon from "react-icons-kit";
+import { mapPin } from "react-icons-kit/feather/mapPin";
+import { calendar } from "react-icons-kit/feather/calendar";
 
 function Profile({ currentUser, status }) {
-  console.log("USER", currentUser);
-  console.log(status);
   return (
     <div>
       {status === "loading" ? (
         <CircularProgress />
       ) : (
-        Object.values(currentUser).map(value => {
+        Object.values(currentUser).map((value) => {
+          const dateFormat = new Date(value.joined);
+          let monthNumber = dateFormat.getMonth();
+          let monthNames = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
+          let monthName = monthNames[monthNumber];
+          let yearNumber = dateFormat.getFullYear();
           return (
             <>
               <BackDrop src={value.bannerSrc}></BackDrop>
@@ -18,8 +37,14 @@ function Profile({ currentUser, status }) {
                 <Avatar src={value.avatarSrc}></Avatar>
                 <Name>@{value.handle}</Name>
                 <div>{value.displayName}</div>
-                <div>{value.location}</div>
-                <Timestamp>{value.joined}</Timestamp>
+                <Holder>
+                  <Icon size={18} icon={mapPin}></Icon>
+                  <div>{value.location}</div>
+                </Holder>
+                <Timestamp>
+                  <Icon size={18} icon={calendar}></Icon>
+                  {"Joined " + monthName + " " + yearNumber}
+                </Timestamp>
                 <TweetContents>{value.bio}</TweetContents>
                 <span>
                   {" "}
@@ -42,10 +67,11 @@ const TweetContents = styled.div`
 `;
 
 const BackDrop = styled.img`
-  width: 700px;
-  height: 350px;
-  z-index: 1;
-  position: relative;
+  display: block;
+  max-width: 100%;
+  max-height: 300px;
+  width: auto;
+  height: auto;
 `;
 const Avatar = styled.img`
   width: 98px;
@@ -68,6 +94,10 @@ const Wrapper = styled.div`
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
   position: absolute;
   z-index: 2;
+`;
+
+const Holder = styled.div`
+  display: flex;
 `;
 
 const Timestamp = styled.div`
